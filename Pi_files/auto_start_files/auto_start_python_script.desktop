@@ -1,0 +1,4 @@
+[Desktop Entry]
+Type=Application
+Name=auto_start_python_script
+Exec="/auto_start_python.sh"

@@ -1,0 +1,5 @@
+[Desktop Entry]
+Type=Application
+Name=fix_touch
+Exec="/touch_screen_script.sh"
+

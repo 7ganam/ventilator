@@ -1,0 +1,1 @@
+place those in /home/pi file
