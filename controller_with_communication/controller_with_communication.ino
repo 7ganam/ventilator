@@ -33,7 +33,7 @@
 //SERVO varialbles SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
         #include <Servo.h>
         Servo myservo;  // create servo object to control a servo
-        int SERVO_VIRTUAL_ZERO = 75;  // the sevro angle where the pedal presses the bag to its maximum value..set this value manually 
+        int SERVO_VIRTUAL_ZERO = 50;  // the sevro angle where the pedal presses the bag to its maximum value..set this value manually 
 // SERVO varialbles eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
 
 //PID variables and Control SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS       
@@ -48,7 +48,7 @@
         double Kp=.35, Ki=50, Kd=0;
         
         
-        double CONTROL_INPUT_SIGNAL_UPPER_ANGLE =70; //the angle where the pedal just touches the bag from above..there should be no need to change this value anywhere else in the code (maybe I should declare it as const in future versions)
+        double CONTROL_INPUT_SIGNAL_UPPER_ANGLE =130; //the angle where the pedal just touches the bag from above..there should be no need to change this value anywhere else in the code (maybe I should declare it as const in future versions)
         double CONTROL_INPUT_SIGNAL_LOWER_ANGLE =10; //the angle the pedal will descend to ... it's measured relative to SERVO_VIRTUAL_ZERO .. this angle controls the tidal volume.
         float I2E = 1 ;
         float BREATH_PER_MIN= 30 ;  
@@ -159,14 +159,14 @@ void loop()
                      Measure_Pressure();
                      
 // debugging prints.. un comment those and comment Send_Data_If_Needed line to use serial plotter with highes resolution;                                           
-//                     Serial.print(CONTROL_INPUT_SIGNAL);
-//                     Serial.print(",");              //seperator
-//                     Serial.print(ANGLE);
-//                     Serial.print(",");              //seperator
-//                     Serial.println(Pressure-IINIT_PRESSURE);
+                     Serial.print(CONTROL_INPUT_SIGNAL);
+                     Serial.print(",");              //seperator
+                     Serial.print(ANGLE);
+                     Serial.print(",");              //seperator
+                     Serial.println(Pressure-IINIT_PRESSURE);
               
                     
-                     Send_Data_If_Needed();
+//                     Send_Data_If_Needed();
 
         }
 }
@@ -259,7 +259,15 @@ void generate_control_signal_point( int max_angle , int min_angle ,float i2e ,fl
           }
           else if (current_cycle_position > second_point && current_cycle_position <= third_point)
           {
-              CONTROL_INPUT_SIGNAL = max_angle - ((current_cycle_position-second_point) * (max_angle-min_angle) / (third_point-second_point));
+           
+                double a= double(third_point-second_point) / (  pow(double((max_angle-min_angle)), 2) );
+                double xx=current_cycle_position-second_point;
+
+//              CONTROL_INPUT_SIGNAL = max_angle - ((current_cycle_position-second_point) * (max_angle-min_angle) / (third_point-second_point));
+                CONTROL_INPUT_SIGNAL=  double(max_angle-min_angle) - (sqrt(xx/a) ) + double(min_angle);
+
+
+                                
           }
           else if (current_cycle_position > third_point)
           {
