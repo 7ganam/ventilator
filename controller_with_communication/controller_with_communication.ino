@@ -33,7 +33,7 @@
 //SERVO varialbles SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
         #include <Servo.h>
         Servo myservo;  // create servo object to control a servo
-        int SERVO_VIRTUAL_ZERO = 75;  // the sevro angle where the pedal presses the bag to its maximum value..set this value manually 
+        int SERVO_VIRTUAL_ZERO = 50;  // the sevro angle where the pedal presses the bag to its maximum value..set this value manually 
 // SERVO varialbles eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
 
 //PID variables and Control SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS       
@@ -44,11 +44,11 @@
         double CONTROL_INPUT_SIGNAL ;
         unsigned long CONTROL_INPUT_SIGNAL_START_TIME;
 
-        double User_tuned_kp= .35 , User_tuned_ki=32 , User_tuned_kd=0;
-        double Kp=.35, Ki=50, Kd=0;
+        double User_tuned_kp= .35 , User_tuned_ki=2 , User_tuned_kd=0;
+        double Kp=.35, Ki=32, Kd=0;
         
         
-        double CONTROL_INPUT_SIGNAL_UPPER_ANGLE =70; //the angle where the pedal just touches the bag from above..there should be no need to change this value anywhere else in the code (maybe I should declare it as const in future versions)
+        double CONTROL_INPUT_SIGNAL_UPPER_ANGLE =120; //the angle where the pedal just touches the bag from above..there should be no need to change this value anywhere else in the code (maybe I should declare it as const in future versions)
         double CONTROL_INPUT_SIGNAL_LOWER_ANGLE =10; //the angle the pedal will descend to ... it's measured relative to SERVO_VIRTUAL_ZERO .. this angle controls the tidal volume.
         float I2E = 1 ;
         float BREATH_PER_MIN= 30 ;  
@@ -106,7 +106,7 @@ void setup()
 
     //PID setup
       myPID.SetMode(AUTOMATIC);
-      myPID.SetOutputLimits(0,360);
+      myPID.SetOutputLimits(-30,360);
       myPID.SetSampleTime(5);
 
       initiate_control(); //start the timer used in generating the control signal
@@ -164,7 +164,7 @@ void loop()
 //                     Serial.print(ANGLE);
 //                     Serial.print(",");              //seperator
 //                     Serial.println(Pressure-IINIT_PRESSURE);
-              
+//              
                     
                      Send_Data_If_Needed();
 
