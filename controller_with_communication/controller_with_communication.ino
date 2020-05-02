@@ -33,7 +33,7 @@
 //SERVO varialbles SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
         #include <Servo.h>
         Servo myservo;  // create servo object to control a servo
-        int SERVO_VIRTUAL_ZERO = 50;  // the sevro angle where the pedal presses the bag to its maximum value..set this value manually 
+        int SERVO_VIRTUAL_ZERO = 55;  // the sevro angle where the pedal presses the bag to its maximum value..set this value manually 
 // SERVO varialbles eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
 
 //PID variables and Control SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS       

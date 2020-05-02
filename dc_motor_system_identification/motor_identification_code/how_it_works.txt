@@ -1,0 +1,3 @@
+the arduino is connected to a function generator the genrates a signal in 5v range
+arduino samples the signal as analoge read and write it to the motor driver
+the encoder readings is recoreded and sent matlab
