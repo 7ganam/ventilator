@@ -159,14 +159,14 @@ void loop()
                      Measure_Pressure();
                      
 // debugging prints.. un comment those and comment Send_Data_If_Needed line to use serial plotter with highes resolution;                                           
-//                     Serial.print(CONTROL_INPUT_SIGNAL);
-//                     Serial.print(",");              //seperator
-//                     Serial.print(ANGLE);
-//                     Serial.print(",");              //seperator
-//                     Serial.println(Pressure-IINIT_PRESSURE);
+                     Serial.print(CONTROL_INPUT_SIGNAL);
+                     Serial.print(",");              //seperator
+                     Serial.print(ANGLE);
+                     Serial.print(",");              //seperator
+                     Serial.println(Pressure-IINIT_PRESSURE);
 //              
                     
-                     Send_Data_If_Needed();
+//                     Send_Data_If_Needed();
 
         }
 }
