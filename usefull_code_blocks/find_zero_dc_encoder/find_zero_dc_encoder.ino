@@ -117,7 +117,7 @@ void loop()
               {
               
                  analogWrite(clock_wise_ENA ,80);  //motor driver specific code .. change this if you have a different interface
-                 while(ZERO_FLAG==0){    };//wait till the zchannel interrupt changes ZERO_FLAG to 1;
+                 while(ZERO_FLAG==0){ Serial.println(ZERO_FLAG);   };//wait till the zchannel interrupt changes ZERO_FLAG to 1;
                  analogWrite(clock_wise_ENA , 0);  //motor driver specific code .. change this if you have a different interface
                  ENCODER_CLICKS=0;
                  ZERO_FLAG=0;

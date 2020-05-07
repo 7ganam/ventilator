@@ -51,8 +51,9 @@
 
         unsigned long CONTROL_SIGNAL_START_TIME;
 
-        double CONTROL_INPUT_SIGNAL_UPPER_ANGLE =140; //the angle where the pedal just touches the bag from above..there should be no need to change this value anywhere else in the code (maybe I should declare it as const in future versions)
-        double CONTROL_INPUT_SIGNAL_LOWER_ANGLE =0; //the angle the pedal will descend to ... it's measured relative to SERVO_VIRTUAL_ZERO .. this angle controls the tidal volume.
+        double max_angle =140;
+        double CONTROL_INPUT_SIGNAL_UPPER_ANGLE = 140; //the angle where the pedal just touches the bag from above..there should be no need to change this value anywhere else in the code (maybe I should declare it as const in future versions)
+        double CONTROL_INPUT_SIGNAL_LOWER_ANGLE = 0; //the angle the pedal will descend to ... it's measured relative to SERVO_VIRTUAL_ZERO .. this angle controls the tidal volume.
         float  I2E = 1 ;
         float  BREATH_PER_MIN= 30 ;  
 
@@ -146,7 +147,7 @@ void loop()
        }
         else if(START_SIGNAL ==1)
         {
-                     generate_control_signal_point( JUST_RECIEVED_CONTROL_INPUT_SIGNAL_UPPER_ANGLE , JUST_RECIEVED_CONTROL_INPUT_SIGNAL_LOWER_ANGLE , JUST_RECIEVED_I2E ,JUST_RECIEVED_BREATH_PER_MIN );
+                     generate_control_signal_point( JUST_RECIEVED_CONTROL_INPUT_SIGNAL_UPPER_ANGLE , 0 , JUST_RECIEVED_I2E ,JUST_RECIEVED_BREATH_PER_MIN );
                      PID_SENSOR_INPUT = ANGLE;
                      myPID.Compute();
                      give_command_to_motor_drive(PID_OUTPUT);
@@ -155,11 +156,11 @@ void loop()
                     Measure_Pressure();
 
                     //// debugging prints.. un comment those and comment Send_Data_If_Needed line to use serial plotter with highes resolution;                                           
-                    //       Serial.print(ANGLE);
-                    //       Serial.print(",");              //seperator
-                    //       Serial.print(CONTROL_INPUT_SIGNAL);
-                    //       Serial.print(",");              //seperator
-                    //       Serial.println(Pressure);
+//                           Serial.print(ANGLE);
+//                           Serial.print(",");              //seperator
+//                           Serial.print(CONTROL_INPUT_SIGNAL);
+//                           Serial.print(",");              //seperator
+//                           Serial.println(Pressure);
              
                     Send_Data_If_Needed();
 }
@@ -177,7 +178,7 @@ void loop()
 void give_command_to_motor_drive(double pid_PID_OUTPUT)   
       {
             double dead_band = 0.1;
-            if(pid_PID_OUTPUT > 0)      {pid_PID_OUTPUT=pid_PID_OUTPUT + dead_band;  }
+            if( pid_PID_OUTPUT > 0 )      {pid_PID_OUTPUT=pid_PID_OUTPUT + dead_band;  }
             else if(pid_PID_OUTPUT < 0) {pid_PID_OUTPUT=pid_PID_OUTPUT - dead_band;  }
       
             if (pid_PID_OUTPUT > 1) { pid_PID_OUTPUT = 1; }
@@ -195,6 +196,14 @@ void give_command_to_motor_drive(double pid_PID_OUTPUT)
               analogWrite(anti_clock_wise_ENA , abs(signed_pwm_PID_OUTPUT));
               analogWrite(clock_wise_ENA , 0);
             }
+
+            if (signed_pwm_PID_OUTPUT == 0 )
+            {
+              analogWrite(anti_clock_wise_ENA , 0);
+              analogWrite(clock_wise_ENA , 0);
+            }
+
+            
       }
 
 
@@ -234,7 +243,6 @@ void generate_control_signal_point( int max_angle , int min_angle ,float i2e ,fl
            first_point= I_time * CYCLE_PERCENTAGE/100;
            second_point=I_time;
            third_point= I_time + E_time*CYCLE_PERCENTAGE/100;
-         
            if (current_cycle_position <= first_point)
             {
                 CONTROL_INPUT_SIGNAL = min_angle + ( current_cycle_position *  (max_angle-min_angle) / first_point);
@@ -352,7 +360,8 @@ void Setup_Communication()
     
 void Calculate_Inputs()
     {
-      JUST_RECIEVED_CONTROL_INPUT_SIGNAL_LOWER_ANGLE = CONTROL_INPUT_SIGNAL_UPPER_ANGLE - (  float(CONTROL_INPUT_SIGNAL_UPPER_ANGLE*Received_Data[2]) /100  );
+      JUST_RECIEVED_CONTROL_INPUT_SIGNAL_UPPER_ANGLE =  float(Received_Data[2])/100*max_angle;
+//      JUST_RECIEVED_CONTROL_INPUT_SIGNAL_LOWER_ANGLE = CONTROL_INPUT_SIGNAL_UPPER_ANGLE - (  float(CONTROL_INPUT_SIGNAL_UPPER_ANGLE*Received_Data[2]) /100  );
       JUST_RECIEVED_BREATH_PER_MIN =  Received_Data[3];
       JUST_RECIEVED_I2E =  Received_Data[4];
     }
