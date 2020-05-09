@@ -46,8 +46,9 @@
         double  PID_SENSOR_INPUT, PID_OUTPUT;
         double  CONTROL_INPUT_SIGNAL ;
 
-        double User_tuned_kp= 0.03 , User_tuned_ki=0 , User_tuned_kd=0.0006;
-        double Kp=0.03, Ki=00.0, Kd= 0.0006;
+        double User_tuned_kp= 0.06 ,     User_tuned_ki=0 ,      User_tuned_kd=0.0012;
+        
+        double Kp = User_tuned_kp,     Ki = User_tuned_ki,      Kd = User_tuned_kd;
 
         unsigned long CONTROL_SIGNAL_START_TIME;
 
@@ -67,10 +68,10 @@
         PID    myPID(&PID_SENSOR_INPUT, &PID_OUTPUT, &CONTROL_INPUT_SIGNAL, Kp, Ki, Kd, DIRECT);  //construct an instance of the PID class named myPID
     
         int START_SIGNAL = 0;  // the variable that controls if the device is working or not .. (should be bool)
-//PID variables and Control eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+//PID variables and Control eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
 
 
-//MOTOR DRIVER variables  SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
+//MOTOR DRIVER variables  SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
 
 ////uno
 //  #define clock_wise_ENA 10
@@ -78,7 +79,7 @@
     #define clock_wise_ENA 10
     #define anti_clock_wise_ENA 9
 
-//MOTOR DRIVER variables eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+//MOTOR DRIVER variables eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
 
  
 void setup()
@@ -113,6 +114,7 @@ void setup()
       myPID.SetSampleTime(50);
 
       initiate_control(); //start the timer used in generating the control signal // i think there is no need to call this any more after the last update..should try deleting it when i'm on the hardware soon.
+     
 
 //setup pressure sensor
       Setup_Pressure_Sensor();
@@ -124,7 +126,7 @@ void setup()
      move_to_angle(20);
      int found_zero =  discover_zero() ; //this is a blocking function .. it doesn't return untill it finds the encoders zero ... you might need to modify it to make it move a motor till it finds the zero of just move the encoder by hand to find it.
      //Serial.println(found_zero);
-     move_to_angle(20);
+     move_to_angle(53);
      set_zero();
 
 }
@@ -156,13 +158,13 @@ void loop()
                     Measure_Pressure();
 
                     //// debugging prints.. un comment those and comment Send_Data_If_Needed line to use serial plotter with highes resolution;                                           
-//                           Serial.print(ANGLE);
-//                           Serial.print(",");              //seperator
-//                           Serial.print(CONTROL_INPUT_SIGNAL);
-//                           Serial.print(",");              //seperator
-//                           Serial.println(Pressure);
+                           Serial.print(ANGLE);
+                           Serial.print(",");              //seperator
+                           Serial.print(CONTROL_INPUT_SIGNAL);
+                           Serial.print(",");              //seperator
+                           Serial.println(PID_OUTPUT*100);
              
-                    Send_Data_If_Needed();
+//                    Send_Data_If_Needed();
 }
 
 
@@ -178,8 +180,8 @@ void loop()
 void give_command_to_motor_drive(double pid_PID_OUTPUT)   
       {
             double dead_band = 0.1;
-            if( pid_PID_OUTPUT > 0 )      {pid_PID_OUTPUT=pid_PID_OUTPUT + dead_band;  }
-            else if(pid_PID_OUTPUT < 0) {pid_PID_OUTPUT=pid_PID_OUTPUT - dead_band;  }
+//            if( pid_PID_OUTPUT > 0 )      {pid_PID_OUTPUT=pid_PID_OUTPUT + dead_band;  }
+//            else if(pid_PID_OUTPUT < 0) {pid_PID_OUTPUT=pid_PID_OUTPUT - dead_band;  }
       
             if (pid_PID_OUTPUT > 1) { pid_PID_OUTPUT = 1; }
             if (pid_PID_OUTPUT < -1){ pid_PID_OUTPUT = -1;}
